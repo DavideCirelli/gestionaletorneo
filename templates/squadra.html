@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body {
+    background: #0b1220;
+    color: white;
+}
+
+/* CONTENITORE MOBILE FIRST */
+.distinta {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* CARD STYLE */
+.card {
+    background: #111827;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* TITOLI */
+.title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #22c55e;
+}
+
+/* INPUT TOUCH FRIENDLY */
+input, select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    border: none;
+    background: #1f2937;
+    color: white;
+    font-size: 16px;
+}
+
+input:focus, select:focus {
+    outline: 2px solid #22c55e;
+}
+
+/* BOTTONI */
+.btn-save {
+    position: sticky;
+    bottom: 10px;
+    width: 100%;
+    padding: 16px;
+    background: #22c55e;
+    border: none;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+}
+
+/* SUCCESS */
+.alert {
+    background: #14532d;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+/* DESKTOP (solo miglioramenti) */
+@media (min-width: 768px) {
+    .distinta {
+        max-width: 900px;
+    }
+
+    .row-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+}
+</style>
+
+<div class="distinta">
+
+<h2>📋 Distinta squadra</h2>
+
+{% if success %}
+<div class="alert">✅ Distinta salvata</div>
+{% endif %}
+
+<form method="POST">
+
+    <!-- PARTITA -->
+    <div class="card">
+        <div class="title">⚽ Partita</div>
+
+        <select name="match_id">
+            {% for m in matches %}
+            <option value="{{ m[0] }}"
+                {% if selected_match == m[0] %}selected{% endif %}>
+                {{ m[1] }} vs {{ m[2] }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- GIOCATORI -->
+    <div class="card">
+        <div class="title">👕 Giocatori</div>
+
+        {% for i in range(12) %}
+        <input name="players"
+               placeholder="Cognome e Nome giocatore"
+               value="{{ players[i] if players and i < players|length else '' }}">
+        {% endfor %}
+    </div>
+
+    <!-- STAFF -->
+    <div class="card">
+        <div class="title">🧑‍💼 Staff</div>
+
+        <input name="dirigente" placeholder="Dirigente" value="{{ dirigente or '' }}">
+        <input name="accompagnatore" placeholder="Accompagnatore" value="{{ accompagnatore or '' }}">
+        <input name="guardialinee" placeholder="Guardialinee" value="{{ guardialinee or '' }}">
+    </div>
+
+    <button class="btn-save">SALVA DISTINTA</button>
+
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <h2>🧑‍⚖️ Commissario</h2>
+
+  <!-- SELEZIONE PARTITA -->
+  <form method="POST" class="mb-4">
+    <input type="hidden" name="action" value="select_match">
+
+    <select name="match_id" class="form-control mb-2">
+      {% for m in matches %}
+        <option value="{{ m[0] }}">
+          {{ m[1] }} vs {{ m[2] }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <button class="btn btn-primary">Carica partita</button>
+  </form>
+
+  {% if selected_match %}
+
+  <!-- GIOCATORI -->
+  <form method="POST">
+    <input type="hidden" name="action" value="save_players">
+    <input type="hidden" name="match_id" value="{{ selected_match }}">
+
+    <div class="row">
+
+      <!-- CASA -->
+      <div class="col-md-6">
+        <h4>Squadra 1</h4>
+
+        {% for p in team1_players %}
+          <input type="hidden" name="player_id" value="{{ p[0] }}">
+
+          <input class="form-control mb-2" name="name" value="{{ p[1] }}">
+          <input class="form-control mb-3" name="number" value="{{ p[2] or '' }}">
+        {% endfor %}
+
+        <h5 class="mt-4">Staff</h5>
+        {% for s in team1_staff %}
+          <div class="p-2 border rounded mb-2">
+            <strong>{{ s[1] }}</strong>: {{ s[0] }}
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- OSPITI -->
+      <div class="col-md-6">
+        <h4>Squadra 2</h4>
+
+        {% for p in team2_players %}
+          <input type="hidden" name="player_id" value="{{ p[0] }}">
+
+          <input class="form-control mb-2" name="name" value="{{ p[1] }}">
+          <input class="form-control mb-3" name="number" value="{{ p[2] or '' }}">
+        {% endfor %}
+
+        <h5 class="mt-4">Staff</h5>
+        {% for s in team2_staff %}
+          <div class="p-2 border rounded mb-2">
+            <strong>{{ s[1] }}</strong>: {{ s[0] }}
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <button class="btn btn-success mt-3">Salva modifiche</button>
+  </form>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2>Calendario</h2>
+
+  {% for g, partite in giornate.items() %}
+    <h4 class="mt-4">Giornata {{ g }}</h4>
+
+    <table class="table table-bordered">
+      <tr>
+        <th>Partita</th>
+        <th>Risultato</th>
+        <th>Minuto</th>
+        <th>Stato</th>
+      </tr>
+
+      {% for m in partite %}
+      <tr>
+        <td>{{ m[1] }} vs {{ m[2] }}</td>
+        <td>{{ m[3] }} - {{ m[4] }}</td>
+        <td>{{ m[5] }}</td>
+        <td>{{ m[6] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+  {% endfor %}
+</div>
+
+{% endblock %}

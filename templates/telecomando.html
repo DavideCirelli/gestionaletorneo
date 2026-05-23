@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body {
+    background: #0b1220;
+    color: white;
+    margin: 0;
+}
+
+/* FULL SCREEN MOBILE */
+.remote {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* MATCH HEADER */
+.header {
+    background: linear-gradient(135deg, #111827, #1f2937);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.score {
+    font-size: 38px;
+    font-weight: 800;
+    color: #22c55e;
+}
+
+.timer {
+    font-size: 22px;
+    color: #facc15;
+    margin-top: 5px;
+}
+
+/* SECTIONS */
+.section {
+    background: #111827;
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+/* SECTION TITLE */
+.section h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* GRID BUTTONS */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* BIG BUTTONS */
+button {
+    width: 100%;
+    padding: 22px;
+    border-radius: 14px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    touch-action: manipulation;
+}
+
+/* COLORS */
+.start { background: #22c55e; color: black; }
+.stop { background: #facc15; color: black; }
+.reset { background: #3b82f6; }
+
+.home { background: #16a34a; }
+.away { background: #2563eb; }
+
+.minus { background: #ef4444; }
+
+.finish {
+    background: #dc2626;
+}
+
+/* FULL HEIGHT SPACING MOBILE */
+.spacer {
+    height: 6px;
+}
+</style>
+
+<div class="remote">
+
+{% if match %}
+
+<!-- HEADER -->
+<div class="header">
+    <div class="title">{{ match[1] }} vs {{ match[2] }}</div>
+    <div class="score">{{ match[3] }} - {{ match[4] }}</div>
+    <div class="timer">⏱ {{ time }} sec</div>
+</div>
+
+<form method="POST">
+
+    <!-- TIMER -->
+    <div class="section">
+        <h4>⏱ TIMER</h4>
+
+        <div class="grid">
+            <button name="action" value="start" class="start">▶ START</button>
+            <button name="action" value="stop" class="stop">⏸ STOP</button>
+            <button name="action" value="reset" class="reset">🔄 RESET</button>
+            <button name="action" value="finish" class="finish">⏭ FINE PARTITA</button>
+        </div>
+    </div>
+
+    <!-- CASA -->
+    <div class="section">
+        <h4>🏠 CASA</h4>
+
+        <div class="grid">
+            <button name="action" value="goal1" class="home">⚽ + GOL</button>
+            <button name="action" value="goal1_minus" class="minus">❌ - GOL</button>
+        </div>
+    </div>
+
+    <!-- OSPITE -->
+    <div class="section">
+        <h4>✈️ OSPITE</h4>
+
+        <div class="grid">
+            <button name="action" value="goal2" class="away">⚽ + GOL</button>
+            <button name="action" value="goal2_minus" class="minus">❌ - GOL</button>
+        </div>
+    </div>
+
+    <!-- FINE -->
+    
+
+</form>
+
+{% else %}
+
+<div class="header">
+    <div class="title">Nessuna partita</div>
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

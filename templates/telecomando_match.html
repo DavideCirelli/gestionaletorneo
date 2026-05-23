@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body {
+    background: #0b1220;
+    color: white;
+}
+
+/* CONTAINER */
+.remote {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 15px;
+}
+
+/* HEADER MATCH */
+.match-card {
+    background: linear-gradient(135deg, #111827, #1f2937);
+    padding: 20px;
+    border-radius: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.match-title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.score {
+    font-size: 40px;
+    font-weight: bold;
+    color: #22c55e;
+    margin-top: 5px;
+}
+
+.timer {
+    font-size: 26px;
+    margin-top: 10px;
+    color: #facc15;
+}
+
+/* BUTTON GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+/* BUTTON BASE */
+button {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ACTION COLORS */
+.start { background: #22c55e; color: black; }
+.stop { background: #facc15; color: black; }
+.reset { background: #60a5fa; color: black; }
+
+.home { background: #16a34a; }
+.away { background: #2563eb; }
+
+.minus { background: #ef4444; }
+
+.finish {
+    background: #dc2626;
+    margin-top: 20px;
+}
+
+/* SECTION */
+.section {
+    margin-top: 20px;
+    background: #111827;
+    padding: 15px;
+    border-radius: 16px;
+}
+</style>
+
+<div class="remote">
+
+{% if match %}
+
+    <!-- MATCH INFO -->
+    <div class="match-card">
+        <div class="match-title">
+            {{ match[1] }} vs {{ match[2] }}
+        </div>
+
+        <div class="score">
+            {{ match[3] }} - {{ match[4] }}
+        </div>
+
+        <div class="timer">
+            ⏱ {{ time }} sec
+        </div>
+    </div>
+
+    <form method="POST">
+
+        <!-- TIMER -->
+        <div class="section">
+            <h4>⏱ Timer</h4>
+
+            <div class="grid">
+                <button name="action" value="start" class="start">▶ START</button>
+                <button name="action" value="stop" class="stop">⏸ STOP</button>
+                <button name="action" value="reset" class="reset">🔄 RESET</button>
+            </div>
+        </div>
+
+        <!-- CASA -->
+        <div class="section">
+            <h4>🏠 Casa</h4>
+
+            <div class="grid">
+                <button name="action" value="goal1" class="home">⚽ +1 GOL</button>
+                <button name="action" value="goal1_minus" class="minus">❌ -1 GOL</button>
+            </div>
+        </div>
+
+        <!-- OSPITE -->
+        <div class="section">
+            <h4>✈️ Ospite</h4>
+
+            <div class="grid">
+                <button name="action" value="goal2" class="away">⚽ +1 GOL</button>
+                <button name="action" value="goal2_minus" class="minus">❌ -1 GOL</button>
+            </div>
+        </div>
+
+        <!-- FINE -->
+        <button name="action" value="finish" class="finish">
+            ⏭ FINE PARTITA
+        </button>
+
+    </form>
+
+{% else %}
+
+    <h3 style="text-align:center; margin-top:100px;">
+        Nessuna partita selezionata
+    </h3>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

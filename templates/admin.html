@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <h2>⚙️ Admin Panel</h2>
+
+  <!-- ================= SQUADRE ================= -->
+  <h4 class="mt-4">Aggiungi Squadra</h4>
+  <form method="POST">
+    <input type="hidden" name="action" value="add_team">
+    <input class="form-control mb-2" name="team_name" placeholder="Nome squadra">
+    <button class="btn btn-primary">Aggiungi</button>
+  </form>
+
+  <ul class="mt-2">
+    {% for t in teams %}
+      <li>{{ t[1] }}</li>
+    {% endfor %}
+  </ul>
+
+  <!-- ================= UTENTI ================= -->
+  <h4 class="mt-4">Crea Utente</h4>
+  <form method="POST">
+    <input type="hidden" name="action" value="add_user">
+
+    <input class="form-control mb-2" name="username" placeholder="Username">
+    <input class="form-control mb-2" name="password" placeholder="Password">
+
+    <select class="form-control mb-2" name="role">
+      <option value="admin">Admin</option>
+      <option value="squadra">Squadra</option>
+      <option value="commissario">Commissario</option>
+      <option value="campo">Campo</option>
+    </select>
+
+    <select class="form-control mb-2" name="team_id">
+      <option value="">-- Nessuna squadra --</option>
+      {% for t in teams %}
+        <option value="{{ t[0] }}">{{ t[1] }}</option>
+      {% endfor %}
+    </select>
+
+    <button class="btn btn-success">Crea Utente</button>
+  </form>
+
+  <ul class="mt-2">
+    {% for u in users %}
+      <li>{{ u[1] }} - {{ u[2] }}</li>
+    {% endfor %}
+  </ul>
+
+  <!-- ================= PARTITE ================= -->
+  <h4 class="mt-4">Crea Partita</h4>
+<form method="POST">
+  <input type="hidden" name="action" value="add_match">
+
+  <select class="form-control mb-2" name="team1">
+    {% for t in teams %}
+      <option value="{{ t[0] }}">{{ t[1] }}</option>
+    {% endfor %}
+  </select>
+
+  <select class="form-control mb-2" name="team2">
+    {% for t in teams %}
+      <option value="{{ t[0] }}">{{ t[1] }}</option>
+    {% endfor %}
+  </select>
+
+  <input type="datetime-local" name="match_date" class="form-control mb-2">
+
+  <input type="number" name="giornata" class="form-control mb-2" placeholder="Giornata">
+
+  <button class="btn btn-warning">Crea Partita</button>
+</form>
+
+  <table class="table mt-3">
+    <tr>
+      <th>ID</th>
+      <th>Squadre</th>
+      <th>Stato</th>
+    </tr>
+
+    {% for m in matches %}
+    <tr>
+      <td>{{ m[0] }}</td>
+      <td>{{ m[1] }} vs {{ m[2] }}</td>
+      <td>{{ m[3] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</div>
+
+{% endblock %}
