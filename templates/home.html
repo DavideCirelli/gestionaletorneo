@@ -1,31 +1,145 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container mt-4">
-  <h2>Calendario</h2>
+<style>
+body{
+    background:#0b1220;
+    color:white;
+}
+
+.calendar-wrap{
+    max-width:1000px;
+    margin:auto;
+    padding:15px;
+}
+
+/* titolo */
+h2{
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+/* giornata blocco */
+.giornata-block{
+    margin-bottom:30px;
+}
+
+.giornata-title{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:10px;
+    color:#22c55e;
+}
+
+/* tabella moderna */
+.table{
+    background:#111827;
+    border-radius:16px;
+    overflow:hidden;
+    color:white;
+    border:none;
+}
+
+.table th{
+    background:#1f2937;
+    border:none;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.table td{
+    border-color:#1f2937;
+    vertical-align:middle;
+}
+
+/* hover righe */
+.table tr:hover td{
+    background:#0f172a;
+}
+
+/* status badge */
+.badge{
+    padding:6px 10px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.live{ background:#ef4444; }
+.paused{ background:#f59e0b; color:black; }
+.finished{ background:#22c55e; color:black; }
+.upcoming{ background:#64748b; }
+</style>
+
+<div class="calendar-wrap">
+
+  <h2>📅 Calendario</h2>
 
   {% for g, partite in giornate.items() %}
-    <h4 class="mt-4">Giornata {{ g }}</h4>
 
-    <table class="table table-bordered">
-      <tr>
-        <th>Partita</th>
-        <th>Risultato</th>
-        <th>Minuto</th>
-        <th>Stato</th>
-      </tr>
+    <div class="giornata-block">
 
-      {% for m in partite %}
-      <tr>
-        <td>{{ m[1] }} vs {{ m[2] }}</td>
-        <td>{{ m[3] }} - {{ m[4] }}</td>
-        <td>{{ m[5] }}</td>
-        <td>{{ m[6] }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+      <div class="giornata-title">
+        🏟 Giornata {{ g }}
+      </div>
+
+      <table class="table table-borderless align-middle text-center">
+
+        <thead>
+          <tr >
+            <th style="color:white">Partita</th>
+            <th style="color:white">Risultato</th>
+            <th style="color:white">Minuto</th>
+            <th style="color:white">Stato</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {% for m in partite %}
+          <tr>
+
+            <td style="font-weight:600">
+              {{ m[1] }} vs {{ m[2] }}
+            </td>
+
+            <td style="font-size:18px; font-weight:800; color:#22c55e">
+              {{ m[3] }} - {{ m[4] }}
+            </td>
+
+            <td>
+              ⏱ {{ m[5] }}
+            </td>
+
+            <td>
+
+              {% if m[6] == 'live' %}
+                <span class="badge live">LIVE</span>
+
+              {% elif m[6] == 'paused' %}
+                <span class="badge paused">PAUSA</span>
+
+              {% elif m[6] == 'finished' %}
+                <span class="badge finished">FINITA</span>
+
+              {% else %}
+                <span class="badge upcoming">ATTESA</span>
+              {% endif %}
+
+            </td>
+
+          </tr>
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   {% endfor %}
+
 </div>
 
 {% endblock %}

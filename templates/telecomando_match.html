@@ -82,6 +82,25 @@ button {
     padding: 15px;
     border-radius: 16px;
 }
+.btn-next{
+    display:block;
+    width:100%;
+    margin-top:15px;
+    padding:22px;
+    border-radius:20px;
+    text-align:center;
+    text-decoration:none;
+    font-size:24px;
+    font-weight:800;
+    background:#2563eb;
+    color:white;
+    box-shadow:0 8px 25px rgba(37,99,235,0.4);
+}
+
+.btn-next:hover{
+    background:#1d4ed8;
+    color:white;
+}
 </style>
 
 <div class="remote">
@@ -140,6 +159,11 @@ button {
         <button name="action" value="finish" class="finish">
             ⏭ FINE PARTITA
         </button>
+
+        <a href="/telecomando/{{ match[0] + 1 }}"
+   class="btn-next">
+    ⏭ PARTITA SUCCESSIVA
+</a>
 
     </form>
 

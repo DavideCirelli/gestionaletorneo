@@ -1,78 +1,355 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container mt-4">
+<style>
+body{
+    background:#0b1220;
+    color:white;
+}
 
-  <h2>🧑‍⚖️ Commissario</h2>
+/* CONTAINER */
+.commissario-container{
+    max-width:1200px;
+    margin:auto;
+    padding:15px;
+}
 
-  <!-- SELEZIONE PARTITA -->
-  <form method="POST" class="mb-4">
-    <input type="hidden" name="action" value="select_match">
+/* HEADER */
+.page-title{
+    font-size:32px;
+    font-weight:800;
+    margin-bottom:20px;
+    text-align:center;
+}
 
-    <select name="match_id" class="form-control mb-2">
-      {% for m in matches %}
-        <option value="{{ m[0] }}">
-          {{ m[1] }} vs {{ m[2] }}
-        </option>
-      {% endfor %}
-    </select>
+/* CARD */
+.card-dark{
+    background:#111827;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
 
-    <button class="btn btn-primary">Carica partita</button>
-  </form>
+/* TITOLI */
+.section-title{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:15px;
+    color:#22c55e;
+}
 
-  {% if selected_match %}
+/* SELECT */
+.select-match{
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    font-size:18px;
+    margin-bottom:15px;
+}
 
-  <!-- GIOCATORI -->
-  <form method="POST">
-    <input type="hidden" name="action" value="save_players">
-    <input type="hidden" name="match_id" value="{{ selected_match }}">
+/* BUTTON */
+.btn-load{
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:14px;
+    background:#2563eb;
+    color:white;
+    font-size:20px;
+    font-weight:700;
+}
 
-    <div class="row">
+.btn-save{
+    width:100%;
+    padding:20px;
+    border:none;
+    border-radius:16px;
+    background:#22c55e;
+    color:black;
+    font-size:22px;
+    font-weight:800;
+    margin-top:20px;
+}
 
-      <!-- CASA -->
-      <div class="col-md-6">
-        <h4>Squadra 1</h4>
+/* TEAM BOX */
+.team-box{
+    background:#0f172a;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:20px;
+}
 
-        {% for p in team1_players %}
-          <input type="hidden" name="player_id" value="{{ p[0] }}">
+/* TEAM HEADER */
+.team-header{
+    text-align:center;
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:20px;
+}
 
-          <input class="form-control mb-2" name="name" value="{{ p[1] }}">
-          <input class="form-control mb-3" name="number" value="{{ p[2] or '' }}">
-        {% endfor %}
+/* PLAYER ROW */
+.player-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
+}
 
-        <h5 class="mt-4">Staff</h5>
-        {% for s in team1_staff %}
-          <div class="p-2 border rounded mb-2">
-            <strong>{{ s[1] }}</strong>: {{ s[0] }}
-          </div>
-        {% endfor %}
-      </div>
+/* INPUT */
+.input-name{
+    flex:1;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    font-size:18px;
+}
 
-      <!-- OSPITI -->
-      <div class="col-md-6">
-        <h4>Squadra 2</h4>
+.input-number{
+    width:90px;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+}
 
-        {% for p in team2_players %}
-          <input type="hidden" name="player_id" value="{{ p[0] }}">
+/* STAFF */
+.staff-box{
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,0.08);
+}
 
-          <input class="form-control mb-2" name="name" value="{{ p[1] }}">
-          <input class="form-control mb-3" name="number" value="{{ p[2] or '' }}">
-        {% endfor %}
+.staff-title{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:15px;
+    color:#facc15;
+}
 
-        <h5 class="mt-4">Staff</h5>
-        {% for s in team2_staff %}
-          <div class="p-2 border rounded mb-2">
-            <strong>{{ s[1] }}</strong>: {{ s[0] }}
-          </div>
-        {% endfor %}
-      </div>
+.staff-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#1e293b;
+    padding:12px 15px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
+.staff-role{
+    font-weight:700;
+    opacity:0.8;
+}
+
+.staff-name{
+    font-size:16px;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+    .page-title{
+        font-size:28px;
+    }
+
+    .team-header{
+        font-size:22px;
+    }
+
+    .player-row{
+        flex-direction:column;
+    }
+
+    .input-number{
+        width:100%;
+    }
+
+    .btn-save{
+        position:sticky;
+        bottom:10px;
+    }
+}
+
+/* DESKTOP */
+@media (min-width:769px){
+
+    .teams-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:20px;
+    }
+}
+</style>
+
+<div class="commissario-container">
+
+    <div class="page-title">
+        🧑‍⚖️ Commissario di Campo
+    </div>
+
+    <!-- SELEZIONE PARTITA -->
+    <div class="card-dark">
+
+        <div class="section-title">
+            ⚽ Seleziona partita
+        </div>
+
+        <form method="POST">
+
+            <input type="hidden" name="action" value="select_match">
+
+            <select name="match_id" class="select-match">
+
+                {% for m in matches %}
+                <option value="{{ m[0] }}"
+                    {% if selected_match and selected_match == m[0] %}selected{% endif %}>
+                    {{ m[1] }} vs {{ m[2] }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <button class="btn-load">
+                📺 Carica partita
+            </button>
+
+        </form>
 
     </div>
 
-    <button class="btn btn-success mt-3">Salva modifiche</button>
-  </form>
+    {% if selected_match %}
 
-  {% endif %}
+    <form method="POST">
+
+        <input type="hidden" name="action" value="save_players">
+        <input type="hidden" name="match_id" value="{{ selected_match }}">
+
+        <div class="teams-grid">
+
+            <!-- TEAM 1 -->
+            <div class="team-box">
+
+                <div class="team-header">
+                    🔵 Squadra Casa
+                </div>
+
+                {% for p in team1_players %}
+
+                <input type="hidden" name="player_id" value="{{ p[0] }}">
+
+                <div class="player-row">
+
+                    <input
+                        class="input-name"
+                        name="name"
+                        value="{{ p[1] }}"
+                        placeholder="Nome giocatore">
+
+                    <input
+                        class="input-number"
+                        name="number"
+                        value="{{ p[2] or '' }}"
+                        placeholder="N°">
+
+                </div>
+
+                {% endfor %}
+
+                {% if team1_staff %}
+                <div class="staff-box">
+
+                    <div class="staff-title">
+                        🧑‍💼 Staff
+                    </div>
+
+                    {% for s in team1_staff %}
+                    <div class="staff-row">
+                        <div class="staff-role">
+                            {{ s[1]|capitalize }}
+                        </div>
+
+                        <div class="staff-name">
+                            {{ s[0] }}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- TEAM 2 -->
+            <div class="team-box">
+
+                <div class="team-header">
+                    🔴 Squadra Ospite
+                </div>
+
+                {% for p in team2_players %}
+
+                <input type="hidden" name="player_id" value="{{ p[0] }}">
+
+                <div class="player-row">
+
+                    <input
+                        class="input-name"
+                        name="name"
+                        value="{{ p[1] }}"
+                        placeholder="Nome giocatore">
+
+                    <input
+                        class="input-number"
+                        name="number"
+                        value="{{ p[2] or '' }}"
+                        placeholder="N°">
+
+                </div>
+
+                {% endfor %}
+
+                {% if team2_staff %}
+                <div class="staff-box">
+
+                    <div class="staff-title">
+                        🧑‍💼 Staff
+                    </div>
+
+                    {% for s in team2_staff %}
+                    <div class="staff-row">
+                        <div class="staff-role">
+                            {{ s[1]|capitalize }}
+                        </div>
+
+                        <div class="staff-name">
+                            {{ s[0] }}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <button class="btn-save">
+            💾 Salva modifiche
+        </button>
+
+    </form>
+
+    {% endif %}
 
 </div>
 

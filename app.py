@@ -505,8 +505,11 @@ def telecomando_match(match_id):
     conn = get_db()
     cur = conn.cursor()
 
-    # ---------------- AZIONI ----------------
+    # =========================
+    # POST AZIONI
+    # =========================
     if request.method == "POST":
+
         action = request.form.get("action")
 
         # ▶ START
@@ -540,118 +543,7 @@ def telecomando_match(match_id):
                 WHERE id=%s
             """, (match_id,))
 
-        # ⚽ GOAL CASA
-        elif action == "goal1":
-            cur.execute("""
-                UPDATE matches
-                SET score1 = score1 + 1
-                WHERE id=%s
-            """, (match_id,))
-
-        # ⚽ GOAL OSPITE
-        elif action == "goal2":
-            cur.execute("""
-                UPDATE matches
-                SET score2 = score2 + 1
-                WHERE id=%s
-            """, (match_id,))
-
-        # ❌ - CASA
-        elif action == "goal1_minus":
-            cur.execute("""
-                UPDATE matches
-                SET score1 = GREATEST(score1 - 1, 0)
-                WHERE id=%s
-            """, (match_id,))
-
-        # ❌ - OSPITE
-        elif action == "goal2_minus":
-            cur.execute("""
-                UPDATE matches
-                SET score2 = GREATEST(score2 - 1, 0)
-                WHERE id=%s
-            """, (match_id,))
-
-        conn.commit()
-
-    # ---------------- LETTURA MATCH ----------------
-    cur.execute("""
-        SELECT m.id,
-               t1.name,
-               t2.name,
-               m.score1,
-               m.score2,
-               m.elapsed_seconds,
-               m.start_time,
-               m.status
-        FROM matches m
-        JOIN teams t1 ON m.team1_id = t1.id
-        JOIN teams t2 ON m.team2_id = t2.id
-        WHERE m.id=%s
-    """, (match_id,))
-
-    match = cur.fetchone()
-
-    current_time = 0
-
-    if match:
-        base = match[5] or 0
-        start = match[6]
-        status = match[7]
-
-        if start is not None and status == "live":
-            cur.execute("""
-                SELECT EXTRACT(EPOCH FROM (NOW() - %s))::INT
-            """, (start,))
-            live = cur.fetchone()[0] or 0
-            current_time = base + live
-        else:
-            current_time = base
-
-    conn.close()
-
-    return render_template(
-        "telecomando_match.html",
-        match=match,
-        time=current_time
-    )
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    # ---------------- POST (azioni) ----------------
-    if request.method == "POST":
-
-        action = request.form.get("action")
-
-        if action == "start":
-            cur.execute("""
-                UPDATE matches
-                SET status='live',
-                    start_time = NOW()
-                WHERE id=%s
-            """, (match_id,))
-
-        elif action == "stop":
-            cur.execute("""
-                UPDATE matches
-                SET elapsed_seconds =
-                    elapsed_seconds +
-                    EXTRACT(EPOCH FROM (NOW() - start_time))::INT,
-                    start_time = NULL,
-                    status='paused'
-                WHERE id=%s
-            """, (match_id,))
-
-        elif action == "reset":
-            cur.execute("""
-                UPDATE matches
-                SET elapsed_seconds = 0,
-                    start_time = NULL,
-                    status = 'upcoming'
-                WHERE id=%s
-            """, (match_id,))
-
+        # ⏭ FINE PARTITA
         elif action == "finish":
             cur.execute("""
                 UPDATE matches
@@ -660,9 +552,24 @@ def telecomando_match(match_id):
                 WHERE id=%s
             """, (match_id,))
 
+        # ⚽ GOALS
+        elif action == "goal1":
+            cur.execute("UPDATE matches SET score1 = score1 + 1 WHERE id=%s", (match_id,))
+
+        elif action == "goal2":
+            cur.execute("UPDATE matches SET score2 = score2 + 1 WHERE id=%s", (match_id,))
+
+        elif action == "goal1_minus":
+            cur.execute("UPDATE matches SET score1 = GREATEST(score1 - 1, 0) WHERE id=%s", (match_id,))
+
+        elif action == "goal2_minus":
+            cur.execute("UPDATE matches SET score2 = GREATEST(score2 - 1, 0) WHERE id=%s", (match_id,))
+
         conn.commit()
 
-    # ---------------- SEMPRE GET DATI PARTITA ----------------
+    # =========================
+    # GET MATCH
+    # =========================
     cur.execute("""
         SELECT m.id,
                t1.name,
@@ -687,7 +594,7 @@ def telecomando_match(match_id):
         start = match[6]
         status = match[7]
 
-        if start is not None and status == "live":
+        if start and status == "live":
             cur.execute("""
                 SELECT EXTRACT(EPOCH FROM (NOW() - %s))::INT
             """, (start,))
@@ -703,49 +610,6 @@ def telecomando_match(match_id):
         match=match,
         time=current_time
     )
-
-    conn = get_db()
-    cur = conn.cursor()
-
-    if request.method == "POST":
-        action = request.form.get("action")
-
-        # ▶ START
-        if action == "start":
-            cur.execute("""
-                UPDATE matches
-                SET status='live',
-                    start_time = NOW()
-                WHERE id=%s
-            """, (match_id,))
-
-        # ⏸ STOP
-        elif action == "stop":
-            cur.execute("""
-                UPDATE matches
-                SET elapsed_seconds =
-                    elapsed_seconds +
-                    EXTRACT(EPOCH FROM (NOW() - start_time))::INT,
-                    start_time = NULL,
-                    status='paused'
-                WHERE id=%s
-            """, (match_id,))
-
-        # 🔄 RESET
-        elif action == "reset":
-            cur.execute("""
-                UPDATE matches
-                SET elapsed_seconds = 0,
-                    start_time = NULL,
-                    status = 'upcoming'
-                WHERE id=%s
-            """, (match_id,))
-
-        conn.commit()
-
-    conn.close()
-    return render_template("telecomando_match.html", match=match)
-
 # ---------------- ADMIN ----------------
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
